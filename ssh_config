@@ -32,5 +32,5 @@ Host devC
   User ubuntu
   HostName 10.1.0.186
   ProxyJump BastionNSO
-  StrictHostKeyChecking 
+  StrictHostKeyChecking no
   PasswordAuthentication no
