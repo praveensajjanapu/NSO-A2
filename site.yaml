@@ -1,0 +1,58 @@
+---
+- hosts: webservers
+  become: true
+  gather_facts: yes
+  tasks:
+    - name: copy flask app to remote server
+      copy:
+        src: flask-app.py
+        dest: /home/ubuntu/flask-app/venv/flask-app.py
+        mode: "0755"
+    - name: install python3, pip3 venv
+      become: true
+      apt:
+        name:
+          - python3
+          - python3-pip
+          - python3-venv
+        update_cache: yes
+    - name: install flask
+      become: true
+      pip:
+        name: flask
+- name: Configure keep-alive settings for webservers
+  hosts: webservers
+  become: yes
+  tasks:
+    - name: Set keep-alive options
+      lineinfile:
+        dest: /etc/ssh/config
+        regexp: ^.*keepalive_timeout .*
+        line: keepalive_timeout 60s;
+        state: present
+        create: yes
+        backup: yes
+- hosts: HAproxy
+  become: true
+  gather_facts: yes
+  tasks:
+    - name: install HAproxy
+      apt:
+        name: haproxy
+        state: latest
+    - name: configure HAproxy
+      template:
+        src: haproxy.cfg.j2
+        dest: /etc/haproxy/haproxy.cfg
+        become: true
+- hosts: HAproxy
+  become: true
+  tasks:
+    - name: Configure keep-alive settings in HAProxy
+      lineinfile:
+        dest: /etc/ssh/config
+        regexp: timeout\s+http-keep-alive
+        line: timeout http-keep-alive 10s
+        state: present
+        create: yes
+        backup: yes
