@@ -12,7 +12,7 @@ Host HAproxy
   IdentityFile ~/.ssh/id_rsa
   UserKnownHostsFile=~/dev/null
   StrictHostKeyChecking no
-  PasswordAuthentication 
+  PasswordAuthentication no
 
 Host devA
   User ubuntu
