@@ -39,6 +39,7 @@
 - name: configure HAproxy load balancer
   hosts: HAproxy
   become: yes
+  become_method: sudo
   tasks:
     - name: apt update
       apt:
